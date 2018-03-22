@@ -17,7 +17,6 @@
 		F94652CD2029545000123304 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652CC2029545000123304 /* main.m */; };
 		F94652D72029545000123304 /* ScollViewDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652D62029545000123304 /* ScollViewDemoTests.m */; };
 		F94652E22029545000123304 /* ScollViewDemoUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652E12029545000123304 /* ScollViewDemoUITests.m */; };
-		F94652F1202958E900123304 /* MyScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652F0202958E900123304 /* MyScrollView.m */; };
 		F94652F420295BF200123304 /* WebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652F320295BF200123304 /* WebViewController.m */; };
 		F9892CA6202AFCC700107039 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = F9892CA5202AFCC700107039 /* index.html */; };
 /* End PBXBuildFile section */
@@ -61,8 +60,6 @@
 		F94652DD2029545000123304 /* ScollViewDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ScollViewDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F94652E12029545000123304 /* ScollViewDemoUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ScollViewDemoUITests.m; sourceTree = "<group>"; };
 		F94652E32029545000123304 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F94652EF202958E900123304 /* MyScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyScrollView.h; sourceTree = "<group>"; };
-		F94652F0202958E900123304 /* MyScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyScrollView.m; sourceTree = "<group>"; };
 		F94652F220295BF200123304 /* WebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebViewController.h; sourceTree = "<group>"; };
 		F94652F320295BF200123304 /* WebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebViewController.m; sourceTree = "<group>"; };
 		F9892CA5202AFCC700107039 /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
@@ -147,8 +144,6 @@
 				F94652C82029545000123304 /* LaunchScreen.storyboard */,
 				F94652CB2029545000123304 /* Info.plist */,
 				F94652CC2029545000123304 /* main.m */,
-				F94652EF202958E900123304 /* MyScrollView.h */,
-				F94652F0202958E900123304 /* MyScrollView.m */,
 				F94652F220295BF200123304 /* WebViewController.h */,
 				F94652F320295BF200123304 /* WebViewController.m */,
 				F9892CA5202AFCC700107039 /* index.html */,
@@ -368,7 +363,6 @@
 				F94652C22029545000123304 /* ViewController.m in Sources */,
 				F94652F420295BF200123304 /* WebViewController.m in Sources */,
 				F934BDEC206353C8000063E4 /* LJDynamicItem.m in Sources */,
-				F94652F1202958E900123304 /* MyScrollView.m in Sources */,
 				F94652CD2029545000123304 /* main.m in Sources */,
 				F94652BF2029545000123304 /* AppDelegate.m in Sources */,
 			);

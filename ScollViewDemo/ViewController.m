@@ -8,7 +8,6 @@
 
 #import "ViewController.h"
 #import <Masonry/Masonry.h>
-#import "MyScrollView.h"
 #import "WebViewController.h"
 #import "LJDynamicItem.h"
 static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
