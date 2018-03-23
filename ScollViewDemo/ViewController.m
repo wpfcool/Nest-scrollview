@@ -24,7 +24,6 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
 @property (nonatomic,strong)UIScrollView * scrollView;
 @property (nonatomic,strong)UITableView * tableView;
 
-@property (nonatomic,assign)BOOL isCanTableViewScroll;
 
 @property (nonatomic, strong) UIDynamicAnimator *animator;
 @property (nonatomic, weak) UIDynamicItemBehavior *decelerationBehavior;
@@ -53,20 +52,30 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
         make.edges.equalTo(self.view);
     }];
     
+    
+    //添加 subContentView的目的是解决_tableView 点击两次才调用didSelectRowAtIndexPath的问题
+    UIScrollView * subContentView = [[UIScrollView alloc] init];
+    subContentView.scrollEnabled = YES;
+    [_scrollView addSubview:subContentView];
+    
     _tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.scrollEnabled = YES;
+    _tableView.scrollEnabled = NO;
     _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    [_scrollView addSubview:_tableView];
-    self.isCanTableViewScroll = YES;
-    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+    [subContentView addSubview:_tableView];
+    [subContentView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.top.equalTo(self.scrollView);
         make.height.equalTo(self.scrollView.mas_height);
         make.width.equalTo(self.view.mas_width);
     }];
     
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.right.top.equalTo(subContentView);
+        make.height.equalTo(subContentView.mas_height);
+        make.width.equalTo(self.view.mas_width);
+    }];
     
     _webVC = [[WebViewController alloc]init];
     _webVC.currentScrollview.scrollEnabled = NO;
@@ -87,42 +96,18 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestureRecognizerAction:)];
     pan.delegate = self;
     [self.view addGestureRecognizer:pan];
-    
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
     self.dynamicItem = [[LJDynamicItem alloc] init];
-    
-    
-    
 }
-
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return YES;
+-(void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event{
+    [self.animator removeAllBehaviors];
 }
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
-    if(self.isCanTableViewScroll == YES){
-        if(scrollView == self.tableView){
-            if(self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.bounds.size.height){
-                self.tableView.contentOffset =CGPointMake(0,  self.tableView.contentSize.height - self.tableView.bounds.size.height);
-                self.isCanTableViewScroll = NO;
-            }
-        }
-        
-        
-    }
-    else{
-        self.tableView.contentOffset =CGPointMake(0,  self.tableView.contentSize.height - self.tableView.bounds.size.height);
-    }
-}
-
 - (void)controlScrollForVertical:(CGFloat)detal AndState:(UIGestureRecognizerState)state {
     
     if(self.scrollView.contentOffset.y <= 0){
         //最上面
         //设置tableview contentoffsety
 //        self.tableView.scrollEnabled = YES;
-        self.isCanTableViewScroll = YES;
         CGFloat tableviewOffsetY = self.tableView.contentOffset.y - detal;
         if(tableviewOffsetY < 0){
             tableviewOffsetY = self.tableView.contentOffset.y - rubberBandDistance(detal,self.view.frame.size.height);
@@ -139,7 +124,6 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     else if(self.scrollView.contentOffset.y >0 && self.scrollView.contentOffset.y < self.scrollView.bounds.size.height){
         // scroll 滚动
         // 设置 scrollView contentoffsety
-        self.isCanTableViewScroll = NO;
         CGFloat scrollviewOffsetY = self.scrollView.contentOffset.y - detal;
         
         self.scrollView.contentOffset = CGPointMake(0, scrollviewOffsetY);
