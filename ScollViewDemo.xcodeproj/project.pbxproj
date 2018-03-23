@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		051C51220060BBB8C9537B2B /* libPods-ScollViewDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BC41D9B7D9294CF0272B6B /* libPods-ScollViewDemo.a */; };
 		F934BDEC206353C8000063E4 /* LJDynamicItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F934BDEA206353C8000063E4 /* LJDynamicItem.m */; };
+		F9441B4C2064AD2A00977E8F /* UIScrollView+My.m in Sources */ = {isa = PBXBuildFile; fileRef = F9441B4B2064AD2A00977E8F /* UIScrollView+My.m */; };
 		F94652BF2029545000123304 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652BE2029545000123304 /* AppDelegate.m */; };
 		F94652C22029545000123304 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F94652C12029545000123304 /* ViewController.m */; };
 		F94652C52029545000123304 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F94652C32029545000123304 /* Main.storyboard */; };
@@ -44,6 +45,8 @@
 		94BC41D9B7D9294CF0272B6B /* libPods-ScollViewDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ScollViewDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F934BDEA206353C8000063E4 /* LJDynamicItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LJDynamicItem.m; sourceTree = "<group>"; };
 		F934BDEB206353C8000063E4 /* LJDynamicItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LJDynamicItem.h; sourceTree = "<group>"; };
+		F9441B4A2064AD2A00977E8F /* UIScrollView+My.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+My.h"; sourceTree = "<group>"; };
+		F9441B4B2064AD2A00977E8F /* UIScrollView+My.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+My.m"; sourceTree = "<group>"; };
 		F94652BA2029545000123304 /* ScollViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ScollViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F94652BD2029545000123304 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		F94652BE2029545000123304 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -147,6 +150,8 @@
 				F94652F220295BF200123304 /* WebViewController.h */,
 				F94652F320295BF200123304 /* WebViewController.m */,
 				F9892CA5202AFCC700107039 /* index.html */,
+				F9441B4A2064AD2A00977E8F /* UIScrollView+My.h */,
+				F9441B4B2064AD2A00977E8F /* UIScrollView+My.m */,
 			);
 			path = ScollViewDemo;
 			sourceTree = "<group>";
@@ -365,6 +370,7 @@
 				F934BDEC206353C8000063E4 /* LJDynamicItem.m in Sources */,
 				F94652CD2029545000123304 /* main.m in Sources */,
 				F94652BF2029545000123304 /* AppDelegate.m in Sources */,
+				F9441B4C2064AD2A00977E8F /* UIScrollView+My.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

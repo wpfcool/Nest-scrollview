@@ -10,6 +10,7 @@
 #import <Masonry/Masonry.h>
 #import "WebViewController.h"
 #import "LJDynamicItem.h"
+#import "UIScrollView+My.h"
 static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     
     const CGFloat constant = 0.55f;
@@ -23,6 +24,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
 @property (nonatomic,strong)UIScrollView * scrollView;
 @property (nonatomic,strong)UITableView * tableView;
 
+@property (nonatomic,assign)BOOL isCanTableViewScroll;
 
 @property (nonatomic, strong) UIDynamicAnimator *animator;
 @property (nonatomic, weak) UIDynamicItemBehavior *decelerationBehavior;
@@ -55,10 +57,10 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     _tableView.delegate = self;
     _tableView.dataSource = self;
     _tableView.showsVerticalScrollIndicator = NO;
-    _tableView.scrollEnabled = NO;
+    _tableView.scrollEnabled = YES;
     _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     [_scrollView addSubview:_tableView];
-    
+    self.isCanTableViewScroll = YES;
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.top.equalTo(self.scrollView);
         make.height.equalTo(self.scrollView.mas_height);
@@ -66,7 +68,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     }];
     
     
-     _webVC = [[WebViewController alloc]init];
+    _webVC = [[WebViewController alloc]init];
     _webVC.currentScrollview.scrollEnabled = NO;
     [self addChildViewController:_webVC];
     
@@ -83,13 +85,35 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     
     
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestureRecognizerAction:)];
-   pan.delegate = self;
+    pan.delegate = self;
     [self.view addGestureRecognizer:pan];
     
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
     self.dynamicItem = [[LJDynamicItem alloc] init];
     
     
+    
+}
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    return YES;
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+    if(self.isCanTableViewScroll == YES){
+        if(scrollView == self.tableView){
+            if(self.tableView.contentOffset.y >= self.tableView.contentSize.height - self.tableView.bounds.size.height){
+                self.tableView.contentOffset =CGPointMake(0,  self.tableView.contentSize.height - self.tableView.bounds.size.height);
+                self.isCanTableViewScroll = NO;
+            }
+        }
+        
+        
+    }
+    else{
+        self.tableView.contentOffset =CGPointMake(0,  self.tableView.contentSize.height - self.tableView.bounds.size.height);
+    }
 }
 
 - (void)controlScrollForVertical:(CGFloat)detal AndState:(UIGestureRecognizerState)state {
@@ -97,12 +121,13 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     if(self.scrollView.contentOffset.y <= 0){
         //最上面
         //设置tableview contentoffsety
-        
+//        self.tableView.scrollEnabled = YES;
+        self.isCanTableViewScroll = YES;
         CGFloat tableviewOffsetY = self.tableView.contentOffset.y - detal;
         if(tableviewOffsetY < 0){
             tableviewOffsetY = self.tableView.contentOffset.y - rubberBandDistance(detal,self.view.frame.size.height);
         }
-       else if(tableviewOffsetY > (self.tableView.contentSize.height - self.tableView.bounds.size.height)){
+        else if(tableviewOffsetY > (self.tableView.contentSize.height - self.tableView.bounds.size.height)){
             
             tableviewOffsetY = self.tableView.contentSize.height - self.tableView.bounds.size.height;
             //
@@ -113,23 +138,24 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     }
     else if(self.scrollView.contentOffset.y >0 && self.scrollView.contentOffset.y < self.scrollView.bounds.size.height){
         // scroll 滚动
-       // 设置 scrollView contentoffsety
+        // 设置 scrollView contentoffsety
+        self.isCanTableViewScroll = NO;
         CGFloat scrollviewOffsetY = self.scrollView.contentOffset.y - detal;
-
+        
         self.scrollView.contentOffset = CGPointMake(0, scrollviewOffsetY);
     }else{
         
         NSLog(@"=======");
         self.scrollView.contentOffset = CGPointMake(0, self.scrollView.bounds.size.height);
-
+        
         CGFloat webOffsetY = self.webVC.currentScrollview.contentOffset.y - detal;
-
+        
         if(webOffsetY < 0){
-          webOffsetY = 0;
+            webOffsetY = 0;
             
             self.scrollView.contentOffset = CGPointMake(0, self.scrollView.contentOffset.y - detal);
         }
-
+        
         
         if(webOffsetY > (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.bounds.size.height)){
             webOffsetY = self.webVC.currentScrollview.contentOffset.y - rubberBandDistance(detal, self.view.bounds.size.height);
@@ -139,37 +165,37 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
         
     }
     //添加依附
-        BOOL outsideFrame = (self.tableView.contentOffset.y < 0 || self.webVC.currentScrollview.contentOffset.y > (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height)) &&!(self.scrollView.contentOffset.y > 0 && self.scrollView.contentOffset.y < self.scrollView.bounds.size.height);
+    BOOL outsideFrame = (self.tableView.contentOffset.y < 0 || self.webVC.currentScrollview.contentOffset.y > (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height)) &&!(self.scrollView.contentOffset.y > 0 && self.scrollView.contentOffset.y < self.scrollView.bounds.size.height);
     
     if(outsideFrame && self.decelerationBehavior && !self.springBehavior){
-                CGPoint target = CGPointZero;
-                BOOL isMian = NO;
-                if (self.tableView.contentOffset.y < 0) {
-                    self.dynamicItem.center = self.tableView.contentOffset;
-                    target = CGPointZero;
-                    isMian = YES;
-                } else if (self.webVC.currentScrollview.contentOffset.y > (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height)) {
-                    self.dynamicItem.center = self.webVC.currentScrollview.contentOffset;
-                    target = CGPointMake(self.webVC.currentScrollview.contentOffset.x, (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height));
-                    isMian = NO;
+        CGPoint target = CGPointZero;
+        BOOL isMian = NO;
+        if (self.tableView.contentOffset.y < 0) {
+            self.dynamicItem.center = self.tableView.contentOffset;
+            target = CGPointZero;
+            isMian = YES;
+        } else if (self.webVC.currentScrollview.contentOffset.y > (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height)) {
+            self.dynamicItem.center = self.webVC.currentScrollview.contentOffset;
+            target = CGPointMake(self.webVC.currentScrollview.contentOffset.x, (self.webVC.currentScrollview.contentSize.height - self.webVC.currentScrollview.frame.size.height));
+            isMian = NO;
+        }
+        [self.animator removeBehavior:self.decelerationBehavior];
+        __weak typeof(self) weakSelf = self;
+        UIAttachmentBehavior *springBehavior = [[UIAttachmentBehavior alloc] initWithItem:self.dynamicItem attachedToAnchor:target];
+        springBehavior.length = 0;
+        springBehavior.damping = 1;
+        springBehavior.frequency = 2;
+        springBehavior.action = ^{
+            if (isMian) {
+                weakSelf.tableView.contentOffset = weakSelf.dynamicItem.center;
+                if (weakSelf.scrollView.contentOffset.y == 0) {
                 }
-                [self.animator removeBehavior:self.decelerationBehavior];
-                __weak typeof(self) weakSelf = self;
-                UIAttachmentBehavior *springBehavior = [[UIAttachmentBehavior alloc] initWithItem:self.dynamicItem attachedToAnchor:target];
-                springBehavior.length = 0;
-                springBehavior.damping = 1;
-                springBehavior.frequency = 2;
-                springBehavior.action = ^{
-                    if (isMian) {
-                        weakSelf.tableView.contentOffset = weakSelf.dynamicItem.center;
-                        if (weakSelf.scrollView.contentOffset.y == 0) {
-                        }
-                    } else {
-                        weakSelf.webVC.currentScrollview.contentOffset = self.dynamicItem.center;
-                    }
-                };
-                [self.animator addBehavior:springBehavior];
-                self.springBehavior = springBehavior;
+            } else {
+                weakSelf.webVC.currentScrollview.contentOffset = self.dynamicItem.center;
+            }
+        };
+        [self.animator addBehavior:springBehavior];
+        self.springBehavior = springBehavior;
     }
     
     
@@ -182,30 +208,30 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
         }
             break;
         case UIGestureRecognizerStateChanged:{
-                CGFloat currentY = [recognizer translationInView:self.view].y;
-                [self controlScrollForVertical:currentY AndState:UIGestureRecognizerStateChanged];
+            CGFloat currentY = [recognizer translationInView:self.view].y;
+            [self controlScrollForVertical:currentY AndState:UIGestureRecognizerStateChanged];
         }
             break;
         case UIGestureRecognizerStateEnded:
         {
-                self.dynamicItem.center = self.view.bounds.origin;
-                //velocity是在手势结束的时候获取的竖直方向的手势速度
-                CGPoint velocity = [recognizer velocityInView:self.view];
-                UIDynamicItemBehavior *inertialBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.dynamicItem]];
-                [inertialBehavior addLinearVelocity:CGPointMake(0, velocity.y) forItem:self.dynamicItem];
-                // 通过尝试取2.0比较像系统的效果
-                inertialBehavior.resistance = 2.0;
-                __block CGPoint lastCenter = CGPointZero;
-                __weak typeof(self) weakSelf = self;
-                inertialBehavior.action = ^{
-                    //得到每次移动的距离
-                    CGFloat currentY = weakSelf.dynamicItem.center.y - lastCenter.y;
-                    [weakSelf controlScrollForVertical:currentY AndState:UIGestureRecognizerStateEnded];
-                    
-                    lastCenter = weakSelf.dynamicItem.center;
-                };
-                [self.animator addBehavior:inertialBehavior];
-                self.decelerationBehavior = inertialBehavior;
+            self.dynamicItem.center = self.view.bounds.origin;
+            //velocity是在手势结束的时候获取的竖直方向的手势速度
+            CGPoint velocity = [recognizer velocityInView:self.view];
+            UIDynamicItemBehavior *inertialBehavior = [[UIDynamicItemBehavior alloc] initWithItems:@[self.dynamicItem]];
+            [inertialBehavior addLinearVelocity:CGPointMake(0, velocity.y) forItem:self.dynamicItem];
+            // 通过尝试取2.0比较像系统的效果
+            inertialBehavior.resistance = 2.0;
+            __block CGPoint lastCenter = CGPointZero;
+            __weak typeof(self) weakSelf = self;
+            inertialBehavior.action = ^{
+                //得到每次移动的距离
+                CGFloat currentY = weakSelf.dynamicItem.center.y - lastCenter.y;
+                [weakSelf controlScrollForVertical:currentY AndState:UIGestureRecognizerStateEnded];
+                
+                lastCenter = weakSelf.dynamicItem.center;
+            };
+            [self.animator addBehavior:inertialBehavior];
+            self.decelerationBehavior = inertialBehavior;
         }
             break;
             
